@@ -1,0 +1,31 @@
+generator client {
+    provider        = "prisma-client-js"
+    engineType      = "library"
+    previewFeatures = ["interactiveTransactions"]
+}
+
+// datasource db {
+//     provider = "mysql"
+//     url      = "mysql://root:prisma@127.0.0.1:3308/prisma"
+// }
+
+datasource db {
+    provider = "postgres"
+    // url      = "postgresql://postgres:prisma@localhost:5434?pool_timeout=20&connect_timeout=20"
+    url      = "postgresql://postgres:prisma@localhost:5434?connection_limit=10"
+}
+
+model post {
+    id          String  @id @db.VarChar(36)
+    description String? @db.VarChar(255)
+    userId      String  @db.VarChar(36)
+    user        user    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "FK_user_id_post_userId")
+
+    @@index([userId], map: "FK_user_id___post_userId")
+}
+
+model user {
+    id    String @id @db.VarChar(36)
+    name  String @db.VarChar(255)
+    posts post[]
+}
